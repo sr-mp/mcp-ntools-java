@@ -1,0 +1,38 @@
+# Semgrep configuration for Java security and quality checks
+rules:
+  - id: java-security-checks
+    patterns:
+      - pattern: System.out.println(...)
+        message: "Consider using a proper logging framework instead of System.out.println"
+        severity: WARNING
+        languages: [java]
+      
+      - pattern: |
+          try {
+            $BODY
+          } catch (Exception $E) {
+            // empty catch block
+          }
+        message: "Empty catch block - should handle exception appropriately"
+        severity: ERROR
+        languages: [java]
+      
+      - pattern: |
+          String $SQL = "..." + $VAR + "...";
+        message: "Potential SQL injection vulnerability - use prepared statements"
+        severity: ERROR
+        languages: [java]
+
+  - id: java-best-practices
+    patterns:
+      - pattern: |
+          if ($COND == true)
+        message: "Redundant comparison with true"
+        severity: INFO
+        languages: [java]
+      
+      - pattern: |
+          if ($COND == false)
+        message: "Redundant comparison with false"
+        severity: INFO
+        languages: [java]
