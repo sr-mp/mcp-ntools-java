@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,7 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HelloWorldControllerIT {
     @Container
     private static final GenericContainer<?> app = new GenericContainer<>("mcp-ntools-java:latest")
-            .withExposedPorts(8080);
+            .withExposedPorts(8080)
+            .waitingFor(Wait.forHttp("/actuator/health").forStatusCode(200));
 
     private static String baseUrl;
 

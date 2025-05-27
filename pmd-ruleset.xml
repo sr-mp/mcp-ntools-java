@@ -4,29 +4,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/pmd-6.55.0/ruleset_2_0_0.xsd">
     <description>Custom PMD ruleset for MCP NTools Java. Disables AtLeastOneConstructor.</description>
-    <rule ref="category/java/bestpractices.xml">
-        <exclude-pattern>.*Test\.java$</exclude-pattern>
-        <exclude-pattern>.*IT\.java$</exclude-pattern>
-    </rule>
+    <exclude-pattern>.*Test\.java$</exclude-pattern>
+    <exclude-pattern>.*IT\.java$</exclude-pattern>
+    <rule ref="category/java/bestpractices.xml"/>
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor"/>
-        <exclude-pattern>.*Test\.java$</exclude-pattern>
-        <exclude-pattern>.*IT\.java$</exclude-pattern>
     </rule>
-    <rule ref="category/java/design.xml">
-        <exclude-pattern>.*Test\.java$</exclude-pattern>
-        <exclude-pattern>.*IT\.java$</exclude-pattern>
-    </rule>
-    <rule ref="category/java/errorprone.xml">
-        <exclude-pattern>.*Test\.java$</exclude-pattern>
-        <exclude-pattern>.*IT\.java$</exclude-pattern>
-    </rule>
-    <rule ref="category/java/performance.xml">
-        <exclude-pattern>.*Test\.java$</exclude-pattern>
-        <exclude-pattern>.*IT\.java$</exclude-pattern>
-    </rule>
-    <rule ref="category/java/security.xml">
-        <exclude-pattern>.*Test\.java$</exclude-pattern>
-        <exclude-pattern>.*IT\.java$</exclude-pattern>
-    </rule>
+    <rule ref="category/java/design.xml"/>
+    <rule ref="category/java/errorprone.xml"/>
+    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/security.xml"/>
 </ruleset>
