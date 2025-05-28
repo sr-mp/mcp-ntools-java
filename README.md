@@ -1,6 +1,8 @@
 # MCP NTools Java
 
-A Spring Boot application demonstrating comprehensive code quality tools integration including PMD, Checkstyle, SpotBugs, JaCoCo, and Semgrep.
+A Spring Boot application providing a Model Context Protocol (MCP) server for network security tools (Nmap, Nuclei, etc.) with robust protocol compliance, agent integration, and developer onboarding support.
+
+---
 
 ## ✅ Project Status
 
@@ -22,8 +24,28 @@ The project is now fully operational with all quality tools working correctly:
 The project is ready for:
 - ✅ Immediate development work
 - ✅ CI/CD pipeline integration
-- ✅ Team onboarding with [`docs/quality.md`](docs/quality.md)
+- ✅ Team onboarding with [`mcp/docs/quality.md`](mcp/docs/quality.md)
 - ✅ Production deployment preparation
+
+---
+
+## 🚀 Quick Start
+
+1. **Clone the repository**
+2. **Build and run the MCP server:**
+   ```bash
+   cd mcp
+   mvn clean verify
+   mvn spring-boot:run
+   ```
+   The server will start on `http://localhost:8080`.
+
+3. **Explore the API:**
+   - List tools: `GET /mcp/tools`
+   - Tool schema: `GET /mcp/tools/{toolName}/describe`
+   - Run command: `POST /mcp/command/{toolName}`
+
+---
 
 ## Features
 
@@ -37,10 +59,33 @@ The project is ready for:
   - **JaCoCo** - Code coverage analysis (60% minimum)
   - **Maven Integration** - All quality checks run automatically
 
+---
+
+## 🧑‍💻 Developer Onboarding
+
+- **Code Structure:**
+  - Main: `mcp/src/main/java/com/example/mcp/`
+  - Controllers: `controller/`
+  - Services: `tool/`
+  - DTOs: `tool/dto/`
+  - Tool registry/metadata: `tool/ToolRegistry.java`, `tool/ToolMetadata.java`
+- **Integration Tests:**
+  - `mcp/src/test/java/com/example/mcp/controller/`
+  - `mcp/src/test/java/com/example/mcp/tool/`
+
+- **Adding a New Tool:**
+  1. Define request/response DTOs in `tool/dto/`
+  2. Implement service logic in `tool/`
+  3. Register the tool in `ToolRegistry.java`
+  4. Add controller endpoint if needed
+  5. Add integration tests
+
+---
+
 ## 📋 Quick Start
 
 ### For New Developers
-👉 **Read the comprehensive quality guide**: [`docs/quality.md`](docs/quality.md)
+👉 **Read the comprehensive quality guide**: [`mcp/docs/quality.md`](mcp/docs/quality.md)
 
 This guide covers:
 - Quality tools explanation
@@ -62,10 +107,30 @@ mvn jacoco:report
 # View at: target/site/jacoco/index.html
 ```
 
+---
+
+## 🛠️ Usage Examples
+
+See [`mcp/docs/USAGE.md`](mcp/docs/USAGE.md) for detailed API usage and curl examples.
+
+---
+
 ## API Endpoints
 
 - `GET /hello` - Returns "Hello World!"
 - `GET /hello/name?name=John` - Returns "Hello John!" (or "Hello World!" if no name provided)
+
+---
+
+## 📚 Documentation
+
+- [MCP Usage Guide](mcp/docs/USAGE.md): API usage, onboarding, and extension steps
+- [MCP Quality Guide](mcp/docs/quality.md): Code quality, workflow, and best practices
+- [MCP Docs Index](mcp/docs/README.md): Documentation index for the MCP server
+
+For the main project overview, see below.
+
+---
 
 ## Building and Running
 
@@ -98,6 +163,8 @@ The application will start on `http://localhost:8080`
 ```bash
 mvn test
 ```
+
+---
 
 ## Quality Checks
 
@@ -170,6 +237,19 @@ mvn clean verify -Pquality
 mvn compile -Pquick-quality
 ```
 
+---
+
+## 📝 Error Handling
+- All endpoints return JSON with an `error` field if an error occurs.
+- Example error response:
+  ```json
+  {
+    "error": "Invalid input: missing required field 'ipAddress'"
+  }
+  ```
+
+---
+
 ## 📋 Project Structure
 
 ```
@@ -187,7 +267,8 @@ src/
 
 docs/
 ├── README.md                              # Documentation index
-└── quality.md                             # Comprehensive quality guide
+├── quality.md                             # Comprehensive quality guide
+└── USAGE.md                               # API usage and onboarding
 
 Configuration Files:
 ├── .gitignore                             # Git ignore patterns
@@ -196,6 +277,8 @@ Configuration Files:
 ├── QUALITY-CHECKS.md                     # Quality tools summary
 └── README.md                             # This file
 ```
+
+---
 
 ## 🔧 Version Control
 
@@ -220,6 +303,15 @@ git add .
 git commit -m "Initial commit with quality tools setup"
 ```
 
+---
+
+## 🤝 Contributing
+- Follow code style and quality rules (`mvn clean verify` must pass)
+- Add Javadoc to new classes and methods
+- Add/extend integration tests for new features
+
+---
+
 ## Code Quality Configuration
 
 - **Checkstyle**: `checkstyle.xml` - Enforces Java coding standards
@@ -230,6 +322,8 @@ git commit -m "Initial commit with quality tools setup"
 - **Lombok**: Reduces boilerplate code with automatic generation
 - **Git**: `.gitignore` properly excludes all generated artifacts and IDE files
 
+---
+
 ## Development Guidelines
 
 1. **Code Style**: Follow the Checkstyle rules defined in `checkstyle.xml`
@@ -237,3 +331,5 @@ git commit -m "Initial commit with quality tools setup"
 3. **Security**: Address all Semgrep findings
 4. **Quality**: Fix PMD and SpotBugs violations
 5. **Documentation**: Use Javadoc for public methods and classes
+
+For more, see the [MCP Quality Guide](mcp/docs/quality.md) and [MCP Usage Guide](mcp/docs/USAGE.md).
