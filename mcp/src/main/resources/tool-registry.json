@@ -1,0 +1,103 @@
+{
+  "nmap-advanced-scan": {
+    "name": "nmap-advanced-scan",
+    "description": "Performs advanced Nmap scans with many options (ports, OS detection, decoys, etc).",
+    "inputSchema": {
+      "targets": {"type": "array", "items": {"type": "string"}, "description": "Target IPs, hostnames, or ranges", "required": true},
+      "scanType": {"type": "string", "description": "Scan type: SYN, UDP, AGGRESSIVE, etc."},
+      "osDetection": {"type": "boolean", "description": "Enable OS detection"},
+      "serviceVersionDetection": {"type": "boolean", "description": "Enable service version detection"},
+      "traceroute": {"type": "boolean", "description": "Enable traceroute"},
+      "useNseScripts": {"type": "boolean", "description": "Use NSE scripts"},
+      "nseScripts": {"type": "array", "items": {"type": "string"}, "description": "NSE script names"},
+      "nseScriptArgs": {"type": "object", "additionalProperties": {"type": "string"}, "description": "NSE script arguments"},
+      "outputFormat": {"type": "string", "description": "Output format: xml, json, grepable"},
+      "timing": {"type": "integer", "description": "Timing template (0-5)"},
+      "extraFlags": {"type": "array", "items": {"type": "string"}, "description": "Extra Nmap flags"},
+      "ipv6": {"type": "boolean", "description": "Enable IPv6 scan"},
+      "ports": {"type": "string", "description": "Ports to scan, e.g. '80,443'"},
+      "decoys": {"type": "array", "items": {"type": "string"}, "description": "Decoy IPs for -D"},
+      "fragmentPackets": {"type": "boolean", "description": "Enable packet fragmentation (-f)"},
+      "sourcePort": {"type": "integer", "description": "Source port for scan"},
+      "packetTrace": {"type": "boolean", "description": "Enable packet trace"},
+      "debugLevel": {"type": "integer", "description": "Debug level (-d)"},
+      "arpScan": {"type": "boolean", "description": "Enable ARP scan (-PR)"},
+      "ipProtocolScan": {"type": "boolean", "description": "Enable IP protocol scan (-sO)"},
+      "minRate": {"type": "integer", "description": "Minimum packet rate"},
+      "maxRate": {"type": "integer", "description": "Maximum packet rate"},
+      "hostTimeout": {"type": "integer", "description": "Host timeout (ms)"},
+      "allOutputFormats": {"type": "boolean", "description": "Output all formats (-oA)"},
+      "customOutputFile": {"type": "string", "description": "Custom output file name"},
+      "nseCategories": {"type": "array", "items": {"type": "string"}, "description": "NSE script categories"},
+      "updateNseDb": {"type": "boolean", "description": "Update NSE script DB"},
+      "bannerGrab": {"type": "boolean", "description": "Enable banner grabbing"},
+      "scanDelay": {"type": "integer", "description": "Scan delay (ms)"},
+      "maxScanDelay": {"type": "integer", "description": "Max scan delay (ms)"},
+      "dataLength": {"type": "integer", "description": "Custom data length"},
+      "customData": {"type": "string", "description": "Custom data string"},
+      "excludeHosts": {"type": "array", "items": {"type": "string"}, "description": "Hosts to exclude"},
+      "excludeFile": {"type": "string", "description": "File with hosts to exclude"},
+      "recordRoute": {"type": "boolean", "description": "Record route"}
+    },
+    "outputSchema": {
+      "result": {"type": "object", "description": "Parsed scan results (hostPorts, osMatches, etc)"},
+      "rawOutput": {"type": "string", "description": "Raw Nmap output"},
+      "success": {"type": "boolean", "description": "Scan success flag"},
+      "error": {"type": "string", "nullable": true, "description": "Error message if any"}
+    }
+  },
+  "nmap-scan-ports": {
+    "name": "nmap-scan-ports",
+    "description": "Scans specific ports on a single host using Nmap.",
+    "inputSchema": {
+      "ipAddress": {"type": "string", "description": "Target IP address", "required": true},
+      "ports": {"type": "string", "description": "Ports to scan, e.g. '22,80,443'"},
+      "scanType": {"type": "string", "description": "Scan type: SYN, UDP, etc."},
+      "timing": {"type": "integer", "description": "Timing template (0-5)"}
+    },
+    "outputSchema": {
+      "result": {"type": "object", "description": "Open ports result map"}
+    }
+  },
+  "nmap-discover-hosts": {
+    "name": "nmap-discover-hosts",
+    "description": "Discovers live hosts in a network range using Nmap.",
+    "inputSchema": {
+      "networkRange": {"type": "string", "description": "CIDR or range to scan", "required": true},
+      "timeout": {"type": "integer", "description": "Timeout in seconds"}
+    },
+    "outputSchema": {
+      "hosts": {"type": "array", "items": {"type": "string"}, "description": "List of discovered hosts"}
+    }
+  },
+  "nmap-resolve-hostname": {
+    "name": "nmap-resolve-hostname",
+    "description": "Resolves an IP address to a hostname using Nmap.",
+    "inputSchema": {
+      "ipAddress": {"type": "string", "description": "IP address to resolve", "required": true}
+    },
+    "outputSchema": {
+      "hostname": {"type": "string", "description": "Resolved hostname"}
+    }
+  },
+  "nmap-scan-multiple-hosts": {
+    "name": "nmap-scan-multiple-hosts",
+    "description": "Scans multiple hosts for open ports using Nmap.",
+    "inputSchema": {
+      "ipList": {"type": "array", "items": {"type": "string"}, "description": "List of IPs to scan", "required": true},
+      "ports": {"type": "string", "description": "Ports to scan, e.g. '80,443'"}
+    },
+    "outputSchema": {
+      "result": {"type": "object", "description": "Map of host to open ports"}
+    }
+  },
+  "nuclei-list-templates": {
+    "name": "nuclei-list-templates",
+    "description": "Lists available Nuclei templates for vulnerability scanning.",
+    "inputSchema": {},
+    "outputSchema": {
+      "result": {"type": "string", "description": "List of template names (newline separated)"},
+      "success": {"type": "boolean", "description": "Success flag"}
+    }
+  }
+}
