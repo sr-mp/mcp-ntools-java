@@ -17,13 +17,13 @@ public class McpCommandController {
     @Autowired
     private NucleiService nucleiService;
 
-    @PostMapping("/nmap/host-discovery")
+    @PostMapping(value = "/nmap/host-discovery", consumes = "application/json", produces = "application/json")
     public CompletableFuture<ResponseEntity<ToolCommandResponse>> nmapHostDiscovery(@RequestBody ToolCommandRequest req) {
         return nmapService.hostDiscovery(req)
                 .thenApply(ResponseEntity::ok);
     }
 
-    @GetMapping("/nuclei/templates")
+    @GetMapping(value = "/nuclei/templates", produces = "application/json")
     public CompletableFuture<ResponseEntity<ToolCommandResponse>> nucleiTemplates() {
         return nucleiService.listTemplates()
                 .thenApply(ResponseEntity::ok);

@@ -12,27 +12,27 @@ public class NmapMcpController {
     @Autowired
     private NmapMcpService nmapMcpService;
 
-    @PostMapping("/discover_hosts")
+    @PostMapping(value = "/discover_hosts", consumes = "application/json", produces = "application/json")
     public ResponseEntity<DiscoverHostsResponse> discoverHosts(@RequestBody DiscoverHostsRequest req) {
         return ResponseEntity.ok(nmapMcpService.discoverHosts(req));
     }
 
-    @PostMapping("/resolve_hostname")
+    @PostMapping(value = "/resolve_hostname", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ResolveHostnameResponse> resolveHostname(@RequestBody ResolveHostnameRequest req) {
         return ResponseEntity.ok(nmapMcpService.resolveHostname(req));
     }
 
-    @PostMapping("/scan_ports")
+    @PostMapping(value = "/scan_ports", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ScanPortsResponse> scanPorts(@RequestBody ScanPortsRequest req) {
         return ResponseEntity.ok(nmapMcpService.scanPorts(req));
     }
 
-    @PostMapping("/scan_multiple_hosts")
+    @PostMapping(value = "/scan_multiple_hosts", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ScanMultipleHostsResponse> scanMultipleHosts(@RequestBody ScanMultipleHostsRequest req) {
         return ResponseEntity.ok(nmapMcpService.scanMultipleHosts(req));
     }
 
-    @PostMapping("/advanced_scan")
+    @PostMapping(value = "/advanced_scan", consumes = "application/json", produces = "application/json")
     public ResponseEntity<NmapAdvancedScanResponse> advancedScan(@RequestBody NmapAdvancedScanRequest req) {
         return ResponseEntity.ok(nmapMcpService.advancedScan(req));
     }

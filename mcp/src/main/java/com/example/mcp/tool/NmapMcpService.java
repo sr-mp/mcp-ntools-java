@@ -14,6 +14,11 @@ public class NmapMcpService {
     @Autowired
     private NmapService nmapService;
 
+    // Package-private setter for test injection
+    void setNmapService(NmapService nmapService) {
+        this.nmapService = nmapService;
+    }
+
     public DiscoverHostsResponse discoverHosts(DiscoverHostsRequest req) {
         try {
             List<String> args = new ArrayList<>();
@@ -159,6 +164,9 @@ public class NmapMcpService {
 
     public NmapAdvancedScanResponse advancedScan(NmapAdvancedScanRequest req) {
         // Input validation
+        if (nmapService == null) {
+            throw new IllegalStateException("nmapService is not set. Did you forget to inject or mock it in your test?");
+        }
         if (req.getTargets() == null || req.getTargets().isEmpty()) {
             return new NmapAdvancedScanResponse(null, null, false, "At least one target must be specified.");
         }
@@ -221,6 +229,96 @@ public class NmapMcpService {
         }
         // Targets
         if (req.getTargets() != null) args.addAll(req.getTargets());
+        // --- New advanced features ---
+        // Decoy scan
+        if (req.getDecoys() != null && !req.getDecoys().isEmpty()) {
+            args.add("-D");
+            args.add(String.join(",", req.getDecoys()));
+        }
+        // Fragmentation
+        if (Boolean.TRUE.equals(req.getFragmentPackets())) args.add("-f");
+        // Source port spoofing
+        if (req.getSourcePort() != null) {
+            args.add("--source-port");
+            args.add(req.getSourcePort().toString());
+        }
+        // Packet trace
+        if (Boolean.TRUE.equals(req.getPacketTrace())) args.add("--packet-trace");
+        // Debug level
+        if (req.getDebugLevel() != null && req.getDebugLevel() > 0) {
+            StringBuilder dbg = new StringBuilder("-");
+            for (int i = 0; i < req.getDebugLevel(); i++) dbg.append("d");
+            args.add(dbg.toString());
+        }
+        // ARP scan
+        if (Boolean.TRUE.equals(req.getArpScan())) args.add("-PR");
+        // IP protocol scan
+        if (Boolean.TRUE.equals(req.getIpProtocolScan())) args.add("-sO");
+        // Min/max rate
+        if (req.getMinRate() != null) {
+            args.add("--min-rate");
+            args.add(req.getMinRate().toString());
+        }
+        if (req.getMaxRate() != null) {
+            args.add("--max-rate");
+            args.add(req.getMaxRate().toString());
+        }
+        // Host timeout
+        if (req.getHostTimeout() != null) {
+            args.add("--host-timeout");
+            args.add(req.getHostTimeout() + "ms");
+        }
+        // All output formats at once (ignored in container, but for API completeness)
+        if (Boolean.TRUE.equals(req.getAllOutputFormats())) {
+            args.add("-oA");
+            args.add("/tmp/mcp-nmap-output"); // Will not persist in container
+        }
+        // Custom output file (ignored in container)
+        if (req.getCustomOutputFile() != null) {
+            args.add("-oN");
+            args.add(req.getCustomOutputFile());
+        }
+        // NSE script categories
+        if (req.getNseCategories() != null && !req.getNseCategories().isEmpty()) {
+            args.add("--script");
+            args.add(String.join(",", req.getNseCategories()));
+        }
+        // NSE script update
+        if (Boolean.TRUE.equals(req.getUpdateNseDb())) args.add("--script-updatedb");
+        // Banner grabbing
+        if (Boolean.TRUE.equals(req.getBannerGrab())) {
+            args.add("--script");
+            args.add("banner");
+        }
+        // Scan delay
+        if (req.getScanDelay() != null) {
+            args.add("--scan-delay");
+            args.add(req.getScanDelay() + "ms");
+        }
+        if (req.getMaxScanDelay() != null) {
+            args.add("--max-scan-delay");
+            args.add(req.getMaxScanDelay() + "ms");
+        }
+        // Custom payloads
+        if (req.getDataLength() != null) {
+            args.add("--data-length");
+            args.add(req.getDataLength().toString());
+        }
+        if (req.getCustomData() != null) {
+            args.add("--data-string");
+            args.add(req.getCustomData());
+        }
+        // Exclude/include hosts
+        if (req.getExcludeHosts() != null && !req.getExcludeHosts().isEmpty()) {
+            args.add("--exclude");
+            args.add(String.join(",", req.getExcludeHosts()));
+        }
+        if (req.getExcludeFile() != null) {
+            args.add("--excludefile");
+            args.add(req.getExcludeFile());
+        }
+        // Traceroute enhancements
+        if (Boolean.TRUE.equals(req.getRecordRoute())) args.add("--record-route");
         try {
             ToolCommandResponse resp = nmapService.runNmap(args.toArray(new String[0])).get();
             String raw = resp.getResult();

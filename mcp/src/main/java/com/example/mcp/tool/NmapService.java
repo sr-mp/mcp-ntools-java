@@ -37,12 +37,19 @@ public class NmapService {
             pb.command("nmap");
             for (String arg : args) pb.command().add(arg);
             Process process = pb.start();
+            // Timeout logic: wait up to 60 seconds for nmap to finish
+            boolean finished = process.waitFor(60, java.util.concurrent.TimeUnit.SECONDS);
+            if (!finished) {
+                process.destroyForcibly();
+                output.append("Error: nmap process timed out after 60 seconds\n");
+                return CompletableFuture.completedFuture(new ToolCommandResponse(output.toString(), false));
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
-            int exitCode = process.waitFor();
+            int exitCode = process.exitValue();
             success = (exitCode == 0);
         } catch (Exception e) {
             output.append("Error: ").append(e.getMessage());
