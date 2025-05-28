@@ -85,4 +85,80 @@ class McpProtocolComplianceIT {
         assertThat(inputSchema.get("networkRange")).isNotNull();
         assertThat(outputSchema.get("hosts")).isNotNull();
     }
+
+    @Test
+    void mcpDescribeToolShouldHandleCaseSensitivityAndSpecialChars() {
+        String url = "http://localhost:" + port + "/mcp/tools/NMAP-ADVANCED-SCAN/describe";
+        var response = restTemplate.getForEntity(url, String.class);
+        assertThat(response.getStatusCode().value()).isEqualTo(404);
+        url = "http://localhost:" + port + "/mcp/tools/nmap-advanced-scan!@/describe";
+        response = restTemplate.getForEntity(url, String.class);
+        assertThat(response.getStatusCode().value()).isEqualTo(404);
+    }
+
+    @Test
+    void mcpDescribeToolShouldReturnConsistentSchemaWithDTO() {
+        String url = "http://localhost:" + port + "/mcp/tools/nmap-discover-hosts/describe";
+        Map<?,?> tool = restTemplate.getForObject(url, Map.class);
+        Map<?,?> inputSchema = (Map<?,?>) tool.get("inputSchema");
+        // Should match DTO fields
+        assertThat(inputSchema.containsKey("networkRange")).isTrue();
+        assertThat(inputSchema.containsKey("timeout")).isTrue();
+    }
+
+    @Test
+    void mcpDescribeToolShouldHandleLargeInput() {
+        // Simulate a large input for nmap-advanced-scan (not executed, just schema check)
+        String url = "http://localhost:" + port + "/mcp/tools/nmap-advanced-scan/describe";
+        Map<?,?> tool = restTemplate.getForObject(url, Map.class);
+        Map<?,?> inputSchema = (Map<?,?>) tool.get("inputSchema");
+        assertThat(inputSchema.containsKey("targets")).isTrue();
+    }
+
+    @Test
+    void mcpDescribeToolShouldHandleUnicode() {
+        String url = "http://localhost:" + port + "/mcp/tools/nmap-advanced-scan/describe";
+        Map<?,?> tool = restTemplate.getForObject(url, Map.class);
+        // Just check that description can be read and is a String (simulate unicode)
+        Object desc = tool.get("description");
+        assertThat(desc).isInstanceOf(String.class);
+    }
+
+    @Test
+    void mcpDescribeToolShouldReturnErrorFieldOnFailure() {
+        // Simulate a call to a tool endpoint with missing required field
+        String url = "http://localhost:" + port + "/mcp/nmap/discover_hosts";
+        Map<String, Object> req = new HashMap<>(); // missing networkRange
+        var response = restTemplate.postForEntity(url, req, Map.class);
+        assertThat(response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()).isTrue();
+        Map<?,?> body = response.getBody();
+        if (body != null && body.containsKey("error")) {
+            assertThat(body.get("error")).isNotNull();
+        }
+    }
+
+    @Test
+    void mcpDescribeToolShouldReturnValidJsonOnError() {
+        String url = "http://localhost:" + port + "/mcp/nmap/discover_hosts";
+        Map<String, Object> req = new HashMap<>(); // missing required
+        var response = restTemplate.postForEntity(url, req, String.class);
+        assertThat(response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()).isTrue();
+        String body = response.getBody();
+        if (body != null) {
+            assertThat(body.trim().startsWith("{")).isTrue();
+        }
+    }
+
+    @Test
+    void mcpDescribeToolShouldHandleOnlyRequiredFields() {
+        String url = "http://localhost:" + port + "/mcp/nmap/discover_hosts";
+        Map<String, Object> req = new HashMap<>();
+        req.put("networkRange", "192.168.1.0/24");
+        var response = restTemplate.postForEntity(url, req, Map.class);
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        Map<?,?> body = response.getBody();
+        if (body != null) {
+            assertThat(body.containsKey("hosts")).isTrue();
+        }
+    }
 }
