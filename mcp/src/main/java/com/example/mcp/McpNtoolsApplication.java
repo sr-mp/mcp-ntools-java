@@ -12,9 +12,9 @@ import java.util.List;
 @SpringBootApplication
 @EnableAsync
 @ComponentScan("com.example.mcp")
-public class HelloMcpApplication {
+public class McpNtoolsApplication {
     public static void main(String[] args) {
-        SpringApplication.run(HelloMcpApplication.class, args);
+        SpringApplication.run(McpNtoolsApplication.class, args);
     }
 
     @Bean
