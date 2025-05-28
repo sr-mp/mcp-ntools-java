@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.example</groupId>
+        <groupId>local</groupId>
         <artifactId>parent</artifactId>
         <version>1.0.0</version>
         <relativePath>../parent/pom.xml</relativePath>
@@ -78,6 +78,9 @@
                             <include>mcp-1.0.0.jar</include>
                         </resource>
                     </resources>
+                    <buildArgs>
+                        <JAR_FILE>target/mcp-1.0.0.jar</JAR_FILE>
+                    </buildArgs>
                 </configuration>
             </plugin>
         </plugins>
