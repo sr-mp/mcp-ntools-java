@@ -2,6 +2,12 @@ package com.example.mcp.tool.dto;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DTO for a request to perform an advanced Nmap scan with many options.
+ * <p>
+ * Used by the MCP server to receive all scan parameters, including targets, scan type, scripts, timing, and more.
+ * Why: Enables flexible, feature-rich Nmap scanning for agent workflows and automation.
+ */
 public class NmapAdvancedScanRequest {
     private List<String> targets; // IPs, hostnames, or ranges
     private String scanType; // e.g. "SYN", "UDP", "Aggressive", etc.

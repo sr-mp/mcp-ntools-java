@@ -1,10 +1,28 @@
 package com.example.mcp.tool.dto;
 import java.util.Map;
 
+/**
+ * DTO representing the response for an advanced Nmap scan operation.
+ * <p>
+ * Contains parsed scan results, raw output, success flag, and error message if any.
+ * Why: Standardizes advanced scan results for MCP protocol clients and agents.
+ */
 public class NmapAdvancedScanResponse {
+    /**
+     * Parsed scan results (e.g. hostPorts, osMatches, etc).
+     */
     private Map<String, Object> result;
+    /**
+     * Raw Nmap output as a string.
+     */
     private String rawOutput;
+    /**
+     * Indicates if the scan was successful.
+     */
     private boolean success;
+    /**
+     * Error message if the scan failed, or null if successful.
+     */
     private String error;
 
     public NmapAdvancedScanResponse() {}

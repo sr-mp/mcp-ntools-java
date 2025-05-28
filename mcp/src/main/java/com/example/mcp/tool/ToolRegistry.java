@@ -2,6 +2,13 @@ package com.example.mcp.tool;
 
 import java.util.*;
 
+/**
+ * Registry for all available tools in the MCP server.
+ * <p>
+ * Maintains a mapping of tool names to their metadata, including descriptions and input/output schemas.
+ * <p>
+ * Why: Enables dynamic tool discovery and schema description for MCP protocol compliance and agent integration.
+ */
 public class ToolRegistry {
     private static final Map<String, ToolMetadata> tools = new LinkedHashMap<>();
 
@@ -116,10 +123,19 @@ public class ToolRegistry {
         ));
     }
 
+    /**
+     * Returns all registered tool metadata for discovery endpoints.
+     * @return Collection of ToolMetadata
+     */
     public static Collection<ToolMetadata> getAllTools() {
         return tools.values();
     }
 
+    /**
+     * Returns the metadata for a specific tool by name.
+     * @param name Tool name
+     * @return ToolMetadata or null if not found
+     */
     public static ToolMetadata getTool(String name) {
         return tools.get(name);
     }

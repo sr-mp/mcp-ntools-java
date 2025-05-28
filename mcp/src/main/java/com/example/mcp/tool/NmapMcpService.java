@@ -9,16 +9,30 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.*;
 import java.io.ByteArrayInputStream;
 
+/**
+ * Service class implementing all Nmap-based tool logic for the MCP protocol.
+ * <p>
+ * Provides methods for host discovery, hostname resolution, port scanning, multi-host scanning,
+ * and advanced Nmap scans. Handles argument construction, output parsing, and error handling.
+ * <p>
+ * Why: Centralizes Nmap tool logic for reuse by controllers and to keep business logic out of REST endpoints.
+ */
 @Service
 public class NmapMcpService {
     @Autowired
     private NmapService nmapService;
 
-    // Package-private setter for test injection
+    /**
+     * Injects the NmapService dependency (used for testability).
+     */
     void setNmapService(NmapService nmapService) {
         this.nmapService = nmapService;
     }
 
+    /**
+     * Discovers live hosts in a network range using Nmap.
+     * Parses XML output and returns discovered hosts.
+     */
     public DiscoverHostsResponse discoverHosts(DiscoverHostsRequest req) {
         try {
             List<String> args = new ArrayList<>();
@@ -60,8 +74,10 @@ public class NmapMcpService {
         }
     }
 
+    /**
+     * Resolves an IP address to a hostname using Java DNS lookup.
+     */
     public ResolveHostnameResponse resolveHostname(ResolveHostnameRequest req) {
-        // For now, use Java DNS lookup
         try {
             java.net.InetAddress addr = java.net.InetAddress.getByName(req.getIpAddress());
             return new ResolveHostnameResponse(addr.getHostName());
@@ -70,6 +86,9 @@ public class NmapMcpService {
         }
     }
 
+    /**
+     * Scans specific ports on a single host using Nmap and parses open ports from XML output.
+     */
     public ScanPortsResponse scanPorts(ScanPortsRequest req) {
         try {
             List<String> args = new ArrayList<>();
@@ -106,6 +125,9 @@ public class NmapMcpService {
         }
     }
 
+    /**
+     * Scans multiple hosts for open ports using Nmap and parses results per host.
+     */
     public ScanMultipleHostsResponse scanMultipleHosts(ScanMultipleHostsRequest req) {
         try {
             List<String> args = new ArrayList<>();
@@ -162,6 +184,9 @@ public class NmapMcpService {
         }
     }
 
+    /**
+     * Performs an advanced Nmap scan with many options, parses results, and handles errors.
+     */
     public NmapAdvancedScanResponse advancedScan(NmapAdvancedScanRequest req) {
         // Input validation
         if (nmapService == null) {
