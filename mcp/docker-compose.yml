@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mcp-ntools-java:latest
+    container_name: mcp
+    ports:
+      - "8080:8080"
+    networks:
+      testnet:
+        aliases:
+          - mcp
+    depends_on:
+      - target1
+      - target2
+
+  mcp-test:
+    image: mcp-ntools-java:latest
+    container_name: mcp-test
+    command: ["mvn", "-Dtest=!*,com.example.mcp.controller.McpCommandControllerIT", "-DfailIfNoTests=false", "verify"]
+    working_dir: /app
+    networks:
+      testnet:
+        aliases:
+          - mcp-test
+    depends_on:
+      - target1
+      - target2
+    environment:
+      - MAVEN_OPTS=-Dmaven.repo.local=/app/.m2/repository
+    volumes:
+      - maven-repo:/app/.m2/repository
+
+  target1:
+    image: nginx:alpine
+    container_name: target1
+    networks:
+      testnet:
+        aliases:
+          - target1
+    expose:
+      - "80"
+
+  target2:
+    image: nginx:alpine
+    container_name: target2
+    networks:
+      testnet:
+        aliases:
+          - target2
+    expose:
+      - "80"
+
+networks:
+  testnet:
+    driver: bridge
+
+volumes:
+  maven-repo:
