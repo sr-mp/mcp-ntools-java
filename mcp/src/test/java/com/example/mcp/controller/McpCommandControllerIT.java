@@ -135,4 +135,123 @@ class McpCommandControllerIT {
         String response = restTemplate.postForObject(url, entity, String.class);
         assertThat(response).contains("hostname");
     }
+
+    @Test
+    void nmapAdvancedScanServiceVersionDetection() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[\"target1\"]," +
+                "\"serviceVersionDetection\":true," +
+                "\"ports\":\"80\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("hostPorts");
+        assertThat(response).contains("80/tcp");
+    }
+
+    @Test
+    void nmapAdvancedScanOsDetection() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[\"target1\"]," +
+                "\"osDetection\":true," +
+                "\"ports\":\"80\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("hostPorts");
+        assertThat(response).contains("80/tcp");
+    }
+
+    @Test
+    void nmapAdvancedScanAggressive() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[\"target1\"]," +
+                "\"scanType\":\"AGGRESSIVE\"," +
+                "\"ports\":\"80\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("hostPorts");
+        assertThat(response).contains("80/tcp");
+    }
+
+    @Test
+    void nmapAdvancedScanUdp() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[\"target1\"]," +
+                "\"scanType\":\"UDP\"," +
+                "\"ports\":\"80\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("hostPorts");
+    }
+
+    @Test
+    void nmapAdvancedScanTraceroute() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[\"target1\"]," +
+                "\"traceroute\":true," +
+                "\"ports\":\"80\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("hostPorts");
+    }
+
+    @Test
+    void nmapAdvancedScanOutputFormatGrepable() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[\"target1\"]," +
+                "\"outputFormat\":\"grepable\"," +
+                "\"ports\":\"80\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("rawOutput");
+        assertThat(response).contains("Ports:");
+    }
+
+    @Test
+    void nmapAdvancedScanEndpoint_valid() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[\"target1\"]," +
+                "\"scanType\":\"SYN\"," +
+                "\"serviceVersionDetection\":true," +
+                "\"osDetection\":true," +
+                "\"outputFormat\":\"xml\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("hostPorts");
+        assertThat(response).contains("serviceVersions");
+        assertThat(response).contains("osMatches");
+    }
+
+    @Test
+    void nmapAdvancedScanEndpoint_invalidInput() {
+        String url = "http://localhost:" + mcpPort + "/mcp/nmap/advanced_scan";
+        String body = "{" +
+                "\"targets\":[]," +
+                "\"scanType\":\"SYN\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        assertThat(response).contains("At least one target must be specified");
+    }
 }

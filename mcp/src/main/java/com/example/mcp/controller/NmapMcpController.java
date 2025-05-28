@@ -31,4 +31,9 @@ public class NmapMcpController {
     public ResponseEntity<ScanMultipleHostsResponse> scanMultipleHosts(@RequestBody ScanMultipleHostsRequest req) {
         return ResponseEntity.ok(nmapMcpService.scanMultipleHosts(req));
     }
+
+    @PostMapping("/advanced_scan")
+    public ResponseEntity<NmapAdvancedScanResponse> advancedScan(@RequestBody NmapAdvancedScanRequest req) {
+        return ResponseEntity.ok(nmapMcpService.advancedScan(req));
+    }
 }
